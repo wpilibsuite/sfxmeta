@@ -28,35 +28,35 @@ import javax.tools.*;
  *
  * @author patrick
  */
-@SupportedAnnotationTypes("dashfx.controls.Designable")
+@SupportedAnnotationTypes("dashfx.controls.DesignableData")
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
-public class DesignableControlProcessor extends javax.annotation.processing.AbstractProcessor
+public class DesignableDataProcessor extends javax.annotation.processing.AbstractProcessor
 {
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv)
 	{
 		ArrayList<String> fqdns = new ArrayList<>();
-		for (Element elem : roundEnv.getElementsAnnotatedWith(Designable.class))
+		for (Element elem : roundEnv.getElementsAnnotatedWith(DesignableData.class))
 		{
 			if (elem.getKind() != ElementKind.CLASS)
 				continue;
 			fqdns.add(((TypeElement) elem).getQualifiedName().toString());
-			Designable designable = elem.getAnnotation(Designable.class);
-			String message = "control annotation found in " + ((TypeElement) elem).getQualifiedName().toString()
-							 + " with value '" + designable.value() + "'";
+			DesignableData designable = elem.getAnnotation(DesignableData.class);
+			String message = "data annotation found in " + ((TypeElement) elem).getQualifiedName().toString()
+							 + " with value '" + designable.name()+ "'";
 			processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, message);
 		}
 		if (fqdns.isEmpty())
 			return true;
 		try
 		{
-			JavaFileObject f = processingEnv.getFiler().createSourceFile("dashfx.registers.DesignableControlIntRes");
+			JavaFileObject f = processingEnv.getFiler().createSourceFile("dashfx.registers.DesignableDataIntRes");
 			//Add the content to the newly generated file.
 			try (Writer w = f.openWriter())
 			{
 				PrintWriter pw = new PrintWriter(w);
 				pw.println("package dashfx.registers;");
-				pw.println("class DesignableControlIntRes\n{");
+				pw.println("class DesignableDataIntRes\n{");
 				pw.println("    public static final Class[] KNOWN = { ");
 				for (String string : fqdns)
 				{
