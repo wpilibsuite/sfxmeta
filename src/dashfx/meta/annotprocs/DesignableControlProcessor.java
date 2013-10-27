@@ -22,6 +22,7 @@ import java.util.*;
 import javax.annotation.processing.*;
 import javax.lang.model.*;
 import javax.lang.model.element.*;
+import javax.lang.model.type.TypeMirror;
 import javax.tools.*;
 
 /**
@@ -38,7 +39,7 @@ public class DesignableControlProcessor extends javax.annotation.processing.Abst
 		ArrayList<String> fqdns = new ArrayList<>();
 		for (Element elem : roundEnv.getElementsAnnotatedWith(Designable.class))
 		{
-			if (elem.getKind() != ElementKind.CLASS)
+			if (elem.getKind() != ElementKind.CLASS || checkForInterfaces(elem))
 				continue;
 			fqdns.add(((TypeElement) elem).getQualifiedName().toString());
 			Designable designable = elem.getAnnotation(Designable.class);
@@ -74,5 +75,15 @@ public class DesignableControlProcessor extends javax.annotation.processing.Abst
 													 x.toString());
 		}
 		return true;
+	}
+
+	private boolean checkForInterfaces(Element elem)
+	{
+		for (TypeMirror typeMirror : ((TypeElement)elem).getInterfaces())
+		{
+			if (typeMirror.toString().equals("dashfx.lib.decorators.Decorator"))
+				return true;
+		}
+		return false;
 	}
 }
