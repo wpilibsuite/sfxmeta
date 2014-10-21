@@ -16,6 +16,8 @@ import java.lang.annotation.*;
 public @interface DesignableData {
     String name() default "";
     String description() default "";
+    String[] protocols() default {};
     String image() default "";
 	DataProcessorType[] types();
+    String[] optionNames() default {};
 }
